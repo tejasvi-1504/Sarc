@@ -270,7 +270,8 @@ body.cursor-hover #cursor-dot {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-top: 18px;
   max-width: 900px;
 }
 
@@ -285,7 +286,7 @@ body.cursor-hover #cursor-dot {
   font-weight: 500;
   letter-spacing: 2px;
   color: rgba(201,160,64,0.85);
-  margin-bottom: 28px;
+  margin-bottom: 16px;
   width: fit-content;
   opacity: 0; /* GSAP sets */
 }
@@ -305,7 +306,7 @@ body.cursor-hover #cursor-dot {
   display: flex;
   gap: 0.01em;
   line-height: 1;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 .bw-clip {
   overflow: hidden;
@@ -357,7 +358,7 @@ body.cursor-hover #cursor-dot {
   font-weight: 600;
   color: var(--txt1);
   line-height: 1.25;
-  margin-bottom: 36px;
+  margin-bottom: 22px;
   max-width: 680px;
   opacity: 0; /* GSAP */
   letter-spacing: -0.3px;
@@ -429,7 +430,7 @@ body.cursor-hover #cursor-dot {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 14px;
-  margin-top: 56px;
+  margin-top: 32px;
   opacity: 0; /* GSAP */
 }
 .kpi-card {
