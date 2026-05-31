@@ -2,8 +2,23 @@
    SARC Pvt Limited — script.js  (v3 — GSAP + Three.js)
    ===================================================== */
 
-/* ---- Register GSAP plugin ---- */
-gsap.registerPlugin(ScrollTrigger);
+/* ---- Register GSAP plugins ---- */
+try { gsap.registerPlugin(ScrollTrigger); } catch(e) { console.warn('ScrollTrigger not available'); }
+
+/* =====================================================
+   SET INITIAL HIDDEN STATES IMMEDIATELY
+   (preloader is covering the page, so no flash)
+   ===================================================== */
+(function setInitialStates() {
+  if (typeof gsap === 'undefined') return;
+  gsap.set('.bw-char',       { yPercent: 110, force3D: true });
+  gsap.set('#heroBadge',     { autoAlpha: 0, y: 28 });
+  gsap.set('#brandSub',      { autoAlpha: 0, y: 18 });
+  gsap.set('#heroHeadline',  { autoAlpha: 0, y: 32 });
+  gsap.set('#heroActions',   { autoAlpha: 0, y: 24 });
+  gsap.set('#heroKpis',      { autoAlpha: 0, y: 36 });
+  gsap.set('.scroll-prompt', { autoAlpha: 0 });
+})();
 
 /* =====================================================
    1.  PRELOADER  (runs before GSAP hero sequence)
@@ -208,25 +223,63 @@ let heroReady = false;
 /* =====================================================
    4.  HERO GSAP ANIMATION  (called after preloader)
    ===================================================== */
+/* Text scramble helper */
+function textScramble(el, finalText, durationMs) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@!';
+  const fps   = 60;
+  const total = Math.round(durationMs / (1000 / fps));
+  let frame   = 0;
+  const id = setInterval(() => {
+    let out = '';
+    for (let i = 0; i < finalText.length; i++) {
+      if (finalText[i] === ' ') { out += ' '; continue; }
+      if (frame / total > i / finalText.length) {
+        out += finalText[i];
+      } else {
+        out += chars[Math.floor(Math.random() * chars.length)];
+      }
+    }
+    el.textContent = out;
+    if (++frame > total) { el.textContent = finalText; clearInterval(id); }
+  }, 1000 / fps);
+}
+
+/* Hard fallback — forces everything visible after 5s if GSAP fails */
+function forceHeroVisible() {
+  ['.bw-char','#heroBadge','#brandSub','#heroHeadline','#heroActions',
+   '#heroKpis','.kpi-card','.scroll-prompt'].forEach(sel => {
+    document.querySelectorAll(sel).forEach(el => {
+      el.style.cssText += ';opacity:1!important;transform:none!important;visibility:visible!important;';
+    });
+  });
+}
+
 function runHeroAnimation() {
-  /* Set initial states */
-  gsap.set('.bw-char',      { yPercent: 105 });
-  gsap.set('#heroBadge',    { opacity: 0, y: 20 });
-  gsap.set('#brandSub',     { opacity: 0, y: 15 });
-  gsap.set('#heroHeadline', { opacity: 0, y: 30 });
-  gsap.set('#heroActions',  { opacity: 0, y: 25 });
-  gsap.set('#heroKpis',     { opacity: 0, y: 35 });
-  gsap.set('.scroll-prompt',{ opacity: 0 });
+  /* Ensure states are set (guard: called if setInitialStates already ran) */
+  const tl = gsap.timeline({
+    defaults: { ease: 'power3.out' },   /* smoother, not "snappy" */
+    onComplete: () => gsap.set('.scroll-prompt', { autoAlpha: 1 })
+  });
 
-  const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+  /* SARC letters slide up — generous stagger, 1.8s each */
+  tl.to('.bw-char', {
+    yPercent: 0, duration: 1.8, stagger: 0.14, force3D: true
+  })
+  /* Badge fades in while chars still moving */
+  .to('#heroBadge',    { autoAlpha: 1, y: 0, duration: 1.1 }, '-=1.5')
+  /* Subtitle line */
+  .to('#brandSub',     { autoAlpha: 1, y: 0, duration: 1.0 }, '-=1.0')
+  /* Main headline */
+  .to('#heroHeadline', { autoAlpha: 1, y: 0, duration: 1.1 }, '-=0.8')
+  /* CTA buttons */
+  .to('#heroActions',  { autoAlpha: 1, y: 0, duration: 1.0 }, '-=0.7')
+  /* KPI cards */
+  .to('#heroKpis',     { autoAlpha: 1, y: 0, duration: 1.0 }, '-=0.6')
+  /* Scroll hint */
+  .to('.scroll-prompt',{ autoAlpha: 1, duration: 0.8 }, '-=0.2');
 
-  tl.to('.bw-char',       { yPercent: 0, duration: 1.3, stagger: 0.08 }, 0.1)
-    .to('#heroBadge',    { opacity: 1, y: 0, duration: 0.9 }, 0.35)
-    .to('#brandSub',     { opacity: 1, y: 0, duration: 0.8 }, 0.6)
-    .to('#heroHeadline', { opacity: 1, y: 0, duration: 0.9 }, 0.75)
-    .to('#heroActions',  { opacity: 1, y: 0, duration: 0.8 }, 0.9)
-    .to('#heroKpis',     { opacity: 1, y: 0, duration: 0.9 }, 1.0)
-    .to('.scroll-prompt',{ opacity: 1, duration: 1 }, 1.4);
+  /* Safety net: if anything goes wrong, make page readable after 5s */
+  setTimeout(forceHeroVisible, 5000);
 }
 
 /* =====================================================

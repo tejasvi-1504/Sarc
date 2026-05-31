@@ -253,25 +253,21 @@ body.cursor-hover #cursor-dot {
   pointer-events: none;
 }
 
-/* Hero layout — flex-column, no overlap ever */
+/* Hero layout — centered, no overlap guaranteed */
 .hero-wrap {
   position: relative;
   z-index: 5;
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: calc(var(--navh) + 48px) 6% 56px;
+  justify-content: center;
+  gap: 44px;
+  padding: calc(var(--navh) + 24px) 6% 90px;
   max-width: 1400px;
   width: 100%;
   margin: 0 auto;
 }
 .hero-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  padding-top: 18px;
   max-width: 900px;
 }
 
@@ -286,9 +282,8 @@ body.cursor-hover #cursor-dot {
   font-weight: 500;
   letter-spacing: 2px;
   color: rgba(201,160,64,0.85);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   width: fit-content;
-  opacity: 0; /* GSAP sets */
 }
 .live-dot {
   width: 7px; height: 7px;
@@ -298,6 +293,36 @@ body.cursor-hover #cursor-dot {
   animation: ldBlink 2s infinite;
 }
 @keyframes ldBlink { 0%,100%{opacity:1; box-shadow:0 0 0 2px rgba(201,160,64,0.3);} 50%{opacity:0.4; box-shadow:0 0 0 6px rgba(201,160,64,0.1);} }
+
+/* Hover glow on individual SARC letters */
+.bw-char {
+  transition: filter 0.35s ease;
+}
+.bw-clip:hover .bw-char {
+  filter: drop-shadow(0 0 40px rgba(232,197,90,0.7)) drop-shadow(0 0 80px rgba(201,160,64,0.4)) brightness(1.15);
+  cursor: default;
+}
+
+/* Blinking cursor after hero headline */
+.hero-headline .type-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 0.85em;
+  background: var(--gold-lt);
+  margin-left: 5px;
+  vertical-align: middle;
+  border-radius: 1px;
+  animation: cursorBlink 1s step-end infinite;
+}
+@keyframes cursorBlink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+
+/* Scramble text color — matches em style */
+.hero-headline .scramble-em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
 /* =====================
    MASSIVE SARC LETTERS
@@ -314,7 +339,7 @@ body.cursor-hover #cursor-dot {
 }
 .bw-char {
   font-family: var(--fh);
-  font-size: clamp(5.5rem, 17vw, 16rem);
+  font-size: clamp(3.8rem, 11vw, 9.5rem);
   font-weight: 800;
   letter-spacing: -0.04em;
   display: inline-block;
@@ -322,16 +347,15 @@ body.cursor-hover #cursor-dot {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   line-height: 0.88;
-  transform: translateY(105%); /* GSAP animates this */
   will-change: transform;
   filter: drop-shadow(0 0 60px rgba(201,160,64,0.25));
+  /* Initial hidden state set by JS, not CSS — avoids double-set glitch */
 }
 
 /* Subtitle under SARC */
 .brand-sub {
   display: flex; align-items: center; gap: 16px;
-  margin-bottom: 24px;
-  opacity: 0; /* GSAP */
+  margin-bottom: 14px;
 }
 .bs-line {
   flex: 1;
@@ -354,14 +378,14 @@ body.cursor-hover #cursor-dot {
 /* Tagline */
 .hero-headline {
   font-family: var(--fh);
-  font-size: clamp(1.5rem, 3.5vw, 2.6rem);
+  font-size: clamp(1.35rem, 2.8vw, 2.2rem);
   font-weight: 600;
   color: var(--txt1);
   line-height: 1.25;
   margin-bottom: 22px;
   max-width: 680px;
-  opacity: 0; /* GSAP */
   letter-spacing: -0.3px;
+  margin-bottom: 28px;
 }
 .hero-headline em {
   font-style: normal;
@@ -374,7 +398,6 @@ body.cursor-hover #cursor-dot {
 .hero-actions {
   display: flex; align-items: center; gap: 16px;
   flex-wrap: wrap;
-  opacity: 0; /* GSAP */
 }
 
 /* Buttons */
@@ -425,13 +448,11 @@ body.cursor-hover #cursor-dot {
   background: rgba(201,160,64,0.08);
 }
 
-/* KPI cards — always at bottom, never overlaps */
+/* KPI cards */
 .hero-kpis {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 14px;
-  margin-top: 32px;
-  opacity: 0; /* GSAP */
 }
 .kpi-card {
   background: rgba(255,255,255,0.04);
@@ -863,7 +884,8 @@ footer { background: #020710; padding: 78px 0 30px; border-top: 1px solid rgba(2
   .footer-grid { grid-template-columns: 1fr; }
   .maint-grid { grid-template-columns: 1fr; }
   .hero-kpis { grid-template-columns: repeat(2,1fr); }
-  .bw-char { font-size: clamp(4.5rem, 22vw, 10rem); }
+  .bw-char { font-size: clamp(3.2rem, 18vw, 7rem); }
+  .hero-wrap { padding: calc(var(--navh) + 20px) 22px 80px; gap: 32px; }
 }
 @media (max-width: 520px) {
   .svc-grid { grid-template-columns: 1fr; }
