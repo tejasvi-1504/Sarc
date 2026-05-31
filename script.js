@@ -223,27 +223,6 @@ let heroReady = false;
 /* =====================================================
    4.  HERO GSAP ANIMATION  (called after preloader)
    ===================================================== */
-/* Text scramble helper */
-function textScramble(el, finalText, durationMs) {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@!';
-  const fps   = 60;
-  const total = Math.round(durationMs / (1000 / fps));
-  let frame   = 0;
-  const id = setInterval(() => {
-    let out = '';
-    for (let i = 0; i < finalText.length; i++) {
-      if (finalText[i] === ' ') { out += ' '; continue; }
-      if (frame / total > i / finalText.length) {
-        out += finalText[i];
-      } else {
-        out += chars[Math.floor(Math.random() * chars.length)];
-      }
-    }
-    el.textContent = out;
-    if (++frame > total) { el.textContent = finalText; clearInterval(id); }
-  }, 1000 / fps);
-}
-
 /* Hard fallback — forces everything visible after 5s if GSAP fails */
 function forceHeroVisible() {
   ['.bw-char','#heroBadge','#brandSub','#heroHeadline','#heroActions',
@@ -286,42 +265,44 @@ function runHeroAnimation() {
    5.  SCROLL-TRIGGERED ANIMATIONS (GSAP ScrollTrigger)
    ===================================================== */
 window.addEventListener('load', () => {
-  /* Generic fade-up for headings */
+  if (typeof ScrollTrigger === 'undefined') return;
+
+  /* Generic fade-up for section headers */
   gsap.utils.toArray('.gsap-up').forEach(el => {
     gsap.from(el, {
-      scrollTrigger: { trigger: el, start: 'top 80%', once: true },
-      y: 60, opacity: 0, duration: 0.9, ease: 'expo.out'
+      scrollTrigger: { trigger: el, start: 'top 82%', once: true },
+      y: 50, opacity: 0, duration: 1.1, ease: 'power3.out'
     });
   });
 
-  /* Cards stagger */
+  /* Service / Why / Maintenance cards — gentle stagger */
   gsap.utils.toArray('#services .svc-card, #why .why-card, #maintenance .maint-card').forEach((el, i) => {
     gsap.from(el, {
-      scrollTrigger: { trigger: el, start: 'top 85%', once: true },
-      y: 80, opacity: 0, duration: 0.8,
-      delay: (i % 3) * 0.12,
-      ease: 'expo.out'
+      scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+      y: 60, opacity: 0, duration: 1.0,
+      delay: (i % 3) * 0.1,
+      ease: 'power3.out'
     });
   });
 
   /* Left / right panels */
   gsap.utils.toArray('.gsap-left').forEach(el => {
     gsap.from(el, {
-      scrollTrigger: { trigger: el, start: 'top 78%', once: true },
-      x: -70, opacity: 0, duration: 1, ease: 'expo.out'
+      scrollTrigger: { trigger: el, start: 'top 80%', once: true },
+      x: -60, opacity: 0, duration: 1.2, ease: 'power3.out'
     });
   });
   gsap.utils.toArray('.gsap-right').forEach(el => {
     gsap.from(el, {
-      scrollTrigger: { trigger: el, start: 'top 78%', once: true },
-      x: 70, opacity: 0, duration: 1, ease: 'expo.out'
+      scrollTrigger: { trigger: el, start: 'top 80%', once: true },
+      x: 60, opacity: 0, duration: 1.2, ease: 'power3.out'
     });
   });
 
   /* Stats cards */
   gsap.from('.imp-stat', {
-    scrollTrigger: { trigger: '#impact', start: 'top 75%', once: true },
-    y: 70, opacity: 0, duration: 0.8, stagger: 0.13, ease: 'expo.out'
+    scrollTrigger: { trigger: '#impact', start: 'top 78%', once: true },
+    y: 55, opacity: 0, duration: 1.0, stagger: 0.15, ease: 'power3.out'
   });
 
   /* KPI hover tilt */
@@ -330,12 +311,11 @@ window.addEventListener('load', () => {
     card.addEventListener('mouseleave', () => gsap.to(card, { scale: 1, duration: 0.4 }));
   });
 
-  /* Section heading reveal with clipPath */
+  /* Section heading gentle fade+rise */
   gsap.utils.toArray('.sec-title').forEach(el => {
     gsap.from(el, {
       scrollTrigger: { trigger: el, start: 'top 88%', once: true },
-      clipPath: 'inset(0 100% 0 0)',
-      opacity: 0, duration: 1.1, ease: 'expo.out'
+      y: 30, opacity: 0, duration: 1.2, ease: 'power3.out'
     });
   });
 });

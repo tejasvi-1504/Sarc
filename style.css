@@ -880,12 +880,11 @@ footer { background: #020710; padding: 78px 0 30px; border-top: 1px solid rgba(2
   .contact-grid { grid-template-columns: 1fr; }
   .contact-form { padding: 28px 22px; }
   .form-row { grid-template-columns: 1fr; }
-  .hero-wrap { padding: calc(var(--navh) + 36px) 24px 44px; }
+  .hero-wrap { padding: calc(var(--navh) + 20px) 22px 80px; gap: 28px; }
   .footer-grid { grid-template-columns: 1fr; }
   .maint-grid { grid-template-columns: 1fr; }
   .hero-kpis { grid-template-columns: repeat(2,1fr); }
   .bw-char { font-size: clamp(3.2rem, 18vw, 7rem); }
-  .hero-wrap { padding: calc(var(--navh) + 20px) 22px 80px; gap: 32px; }
 }
 @media (max-width: 520px) {
   .svc-grid { grid-template-columns: 1fr; }
